@@ -16,7 +16,7 @@ class MLP(nn.Module):
         
         # TODO: Build the MLP architecture
         # If you are up to the task, explore other architectures or model types
-        # Hint: Flatten -> [Linear -> ReLU -> Dropout] * N -> Linear
+        # Hint: Flatten -> [Linear -> ReLU -> Dropout] * N_layers -> Linear
         
         pass
 

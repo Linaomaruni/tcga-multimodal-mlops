@@ -22,7 +22,7 @@ class ExperimentTracker:
         self.csv_file = open(self.csv_path, "w", newline="")
         self.csv_writer = csv.writer(self.csv_file)
         
-        # Header (TODO: add the rest of things we want to track)
+        # Header (TODO: add the rest of things we want to track, loss, gradients, accuracy etc.)
         self.csv_writer.writerow(["epoch"]) 
 
     def log_metrics(self, epoch: int, metrics: Dict[str, float]):
