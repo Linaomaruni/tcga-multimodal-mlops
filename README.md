@@ -149,6 +149,10 @@ training:
 ##  Authors
 
 - Lina Omar
+- Jette Walvis
+- Sarah Schaefers
+- Carmen van der Lans
+- Fien van Engelen
 
 ##  License
 
