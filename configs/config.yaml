@@ -1,0 +1,52 @@
+# TCGA Multi-modal Classification 
+
+# Data paths
+data:
+  titan_embeddings: "tcga_data/tcga_titan_embeddings.pkl"
+  text_embeddings: "data/processed/text_embeddings.pkl"
+  reports: "tcga_data/tcga_reports.jsonl"
+  labels: "tcga_data/tcga_patient_to_cancer_type.csv"
+  splits: "data/splits/patient_splits.json"
+
+# Model architecture
+model:
+  visual_dim: 768        # TITAN embedding dimension
+  text_dim: 896          # Qwen3-Embedding-0.6B dimension
+  hidden_dim: 256        # Hidden layer size
+  num_classes: 32        # Number of cancer types
+  dropout: 0.3           # Dropout rate
+
+# Training hyperparameters
+training:
+  batch_size: 64
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  num_epochs: 100
+  early_stopping_patience: 15
+
+# Data split ratios
+split:
+  train: 0.70
+  val: 0.15
+  test: 0.15
+  seed: 42
+
+# Experiment tracking
+tracking:
+  experiment_name: "tcga-multimodal"
+  log_interval: 10       # Log every N batches
+
+# vLLM settings
+vllm:
+  decoder_model: "Qwen/Qwen3-4B-AWQ"
+  encoder_model: "Qwen/Qwen3-Embedding-0.6B"
+  temperature: 0.1
+  max_tokens: 512
+  concurrency: 8
+
+# Output paths
+output:
+  model_dir: "outputs/models"
+  log_dir: "outputs/logs"
+  figure_dir: "outputs/figures"
+  best_model: "outputs/models/best_model.pt"
