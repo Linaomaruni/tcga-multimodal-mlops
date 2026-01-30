@@ -3,10 +3,11 @@ Data Inspection Script for TCGA Multi-modal Dataset
 This script analyzes the three data sources and verifies alignment.
 """
 
-import pickle
 import json
-import pandas as pd
+import pickle
 from pathlib import Path
+
+import pandas as pd
 
 
 def load_data(data_dir: str = "tcga_data"):

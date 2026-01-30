@@ -1,7 +1,8 @@
+import argparse
 import asyncio
 import json
-import argparse
 import os
+
 from openai import AsyncOpenAI
 from tqdm.asyncio import tqdm
 
