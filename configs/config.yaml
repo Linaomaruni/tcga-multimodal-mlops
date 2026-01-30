@@ -10,7 +10,7 @@ data:
 
 # Model architecture
 model:
-  visual_dim: 768        # TITAN embedding dimension
+  visual_dim: 1024        # TITAN embedding dimension
   text_dim: 896          # Qwen3-Embedding-0.6B dimension
   hidden_dim: 256        # Hidden layer size
   num_classes: 32        # Number of cancer types
