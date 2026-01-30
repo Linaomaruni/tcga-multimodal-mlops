@@ -75,7 +75,14 @@ class Trainer:
             
             # Forward pass
             self.optimizer.zero_grad()
-            outputs = self.model(visual, text)
+            # Handle both multimodal and unimodal models
+            if hasattr(self.model, 'visual_encoder'):  # LateFusionMLP
+                outputs = self.model(visual, text)
+            else:  # UnimodalMLP
+                if self.model.encoder[0].in_features == 768:  # visual_only
+                    outputs = self.model(visual)
+                else:  # text_only
+                    outputs = self.model(text)
             loss = self.criterion(outputs, labels)
             
             # Backward pass
@@ -114,7 +121,14 @@ class Trainer:
             text = text.to(self.device)
             labels = labels.to(self.device)
             
-            outputs = self.model(visual, text)
+            # Handle both multimodal and unimodal models
+            if hasattr(self.model, 'visual_encoder'):  # LateFusionMLP
+                outputs = self.model(visual, text)
+            else:  # UnimodalMLP
+                if self.model.encoder[0].in_features == 768:  # visual_only
+                    outputs = self.model(visual)
+                else:  # text_only
+                    outputs = self.model(text)
             loss = self.criterion(outputs, labels)
             
             total_loss += loss.item()
