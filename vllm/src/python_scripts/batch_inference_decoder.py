@@ -54,7 +54,7 @@ async def run_batch(args):
                     res = json.loads(line)
                     if 'prompt' in res:
                         processed_prompts.add(res['prompt'])
-                except:
+                except Exception:
                     continue
         print(f"Resuming: Found {len(processed_prompts)} items already processed.")
 

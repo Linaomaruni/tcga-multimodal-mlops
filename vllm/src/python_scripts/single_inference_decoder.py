@@ -1,5 +1,4 @@
 import argparse
-import sys
 from openai import OpenAI
 
 def run_single_inference(args):

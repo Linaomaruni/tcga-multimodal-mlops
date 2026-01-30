@@ -76,13 +76,13 @@ def main():
     )
 
     # --- Verification ---
-    print(f"Dataset loaded successfully!")
+    print("Dataset loaded successfully!")
     print(f"Total Patients: {len(train_dataset)}")
     print(f"Number of Classes: {len(train_dataset.class_to_idx)}")
     
     # Peek at the first batch
     features, labels = next(iter(train_loader))
-    print(f"\nBatch Information:")
+    print("\nBatch Information:")
     print(f"Feature shape: {features.shape} (Expected: [{BATCH_SIZE}, 768])")
     print(f"Labels shape:  {labels.shape}  (Expected: [{BATCH_SIZE}])")
     
@@ -90,7 +90,8 @@ def main():
     print("\nClass Mapping (first 5):")
     for i, (name, idx) in enumerate(train_dataset.class_to_idx.items()):
         print(f"  {name}: {idx}")
-        if i == 4: break
+        if i == 4:
+            break
 
 if __name__ == "__main__":
     main()
