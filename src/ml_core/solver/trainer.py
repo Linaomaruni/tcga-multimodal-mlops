@@ -59,7 +59,7 @@ class Trainer:
 
         print(f"Starting training for {epochs} epochs...")
 
-        for epoch in range(epochs):
+        for _epoch in range(epochs):
             # TODO: Call train_epoch and validate
             # TODO: Log metrics to tracker
             # TODO: Save checkpoints
