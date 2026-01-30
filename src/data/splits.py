@@ -89,11 +89,11 @@ def create_patient_splits(
     print("\n" + "=" * 50)
     print("PATIENT-AWARE SPLITS CREATED")
     print("=" * 50)
-    print(f"\n SPLIT SIZES:")
+    print("\n SPLIT SIZES:")
     print(f"  Train: {len(train_pids):>5} patients ({len(train_pids)/len(labels_filtered)*100:.1f}%)")
     print(f"  Val:   {len(val_pids):>5} patients ({len(val_pids)/len(labels_filtered)*100:.1f}%)")
     print(f"  Test:  {len(test_pids):>5} patients ({len(test_pids)/len(labels_filtered)*100:.1f}%)")
-    print(f"\nNo overlap between splits - Patient-aware splitting successful!")
+    print("\nNo overlap between splits - Patient-aware splitting successful!")
     print(f"Splits saved to: {splits_file}")
     
     return splits

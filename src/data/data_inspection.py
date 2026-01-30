@@ -54,7 +54,7 @@ def analyze_data(embeddings, reports, labels):
     
     # Overlap analysis
     common = emb_pids & report_pids & label_pids
-    print(f"\nOVERLAP ANALYSIS:")
+    print("\nOVERLAP ANALYSIS:")
     print(f"  Patients in ALL 3 datasets: {len(common)}")
     
     # Cancer type distribution
