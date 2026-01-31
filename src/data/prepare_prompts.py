@@ -33,7 +33,7 @@ def prepare_prompts(
 ):
     """
     Prepare prompts for vLLM decoder by prepending cleaning instructions.
-    
+
     Args:
         input_path: Path to original tcga_reports.jsonl
         output_path: Path to save prepared prompts
@@ -41,9 +41,9 @@ def prepare_prompts(
     input_file = Path(input_path)
     output_file = Path(output_path)
     output_file.parent.mkdir(parents=True, exist_ok=True)
-    
+
     print(f"Reading reports from: {input_file}")
-    
+
     prepared_count = 0
     with open(input_file, "r") as f_in, open(output_file, "w") as f_out:
         for line in f_in:
@@ -51,23 +51,19 @@ def prepare_prompts(
                 data = json.loads(line)
                 pid = data.get("pid", "unknown")
                 report = data.get("report", "")
-                
+
                 # Create prompt with the cleaning instruction
                 prompt = CLEANING_PROMPT.format(report=report)
-                
+
                 # Output format expected by vLLM decoder
-                output_data = {
-                    "pid": pid,
-                    "prompt": prompt,
-                    "original_report": report
-                }
-                
+                output_data = {"pid": pid, "prompt": prompt, "original_report": report}
+
                 f_out.write(json.dumps(output_data, ensure_ascii=False) + "\n")
                 prepared_count += 1
-    
+
     print(f"Prepared {prepared_count} prompts")
     print(f"Saved to: {output_file}")
-    
+
 
 if __name__ == "__main__":
     prepare_prompts()

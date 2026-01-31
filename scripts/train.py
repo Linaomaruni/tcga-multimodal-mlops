@@ -21,44 +21,34 @@ from src.utils.config import Config
 def parse_args():
     parser = argparse.ArgumentParser(description="Train TCGA Multi-modal Model")
     parser.add_argument(
-        "--config", 
-        type=str, 
-        default="configs/config.yaml",
-        help="Path to config file"
+        "--config", type=str, default="configs/config.yaml", help="Path to config file"
     )
     parser.add_argument(
         "--model_type",
         type=str,
         choices=["multimodal", "visual_only", "text_only"],
         default="multimodal",
-        help="Type of model to train"
+        help="Type of model to train",
     )
+    parser.add_argument("--no_wandb", action="store_true", help="Disable W&B logging")
     parser.add_argument(
-        "--no_wandb",
-        action="store_true",
-        help="Disable W&B logging"
-    )
-    parser.add_argument(
-        "--wandb_project",
-        type=str,
-        default="tcga-multimodal",
-        help="W&B project name"
+        "--wandb_project", type=str, default="tcga-multimodal", help="W&B project name"
     )
     # Hyperparameter overrides
     parser.add_argument("--lr", type=float, default=None, help="Learning rate")
     parser.add_argument("--dropout", type=float, default=None, help="Dropout rate")
     parser.add_argument("--hidden_dim", type=int, default=None, help="Hidden dimension")
     parser.add_argument("--batch_size", type=int, default=None, help="Batch size")
-    
+
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
-    
+
     # Load config
     config = Config(args.config)
-    
+
     # Override config with command line args
     if args.lr is not None:
         config.training.learning_rate = args.lr
@@ -68,7 +58,7 @@ def main():
         config.model.hidden_dim = args.hidden_dim
     if args.batch_size is not None:
         config.training.batch_size = args.batch_size
-    
+
     # Initialize W&B
     use_wandb = not args.no_wandb
     if use_wandb:
@@ -85,12 +75,12 @@ def main():
             },
             name=f"{args.model_type}_lr{config.training.learning_rate}_drop{config.model.dropout}",
         )
-    
+
     # Create dataloaders
     print("Loading data...")
     train_loader, val_loader, test_loader, class_to_idx = create_dataloaders(config)
     class_names = list(class_to_idx.keys())
-    
+
     # Create model
     print(f"Creating {args.model_type} model...")
     if args.model_type == "multimodal":
@@ -115,11 +105,11 @@ def main():
             num_classes=config.model.num_classes,
             dropout=config.model.dropout,
         )
-    
+
     # Count parameters
     num_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(f"Model parameters: {num_params:,}")
-    
+
     # Create trainer
     trainer = Trainer(
         model=model,
@@ -129,14 +119,14 @@ def main():
         class_names=class_names,
         use_wandb=use_wandb,
     )
-    
+
     # Train
     best_f1 = trainer.train()
-    
+
     # Finish W&B
     if use_wandb:
         wandb.finish()
-    
+
     print(f"\n Training complete! Best Macro-F1: {best_f1:.4f}")
     print(f"Model saved to: {config.output.best_model}")
 

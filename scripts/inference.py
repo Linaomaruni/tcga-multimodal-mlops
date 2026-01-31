@@ -28,19 +28,16 @@ def parse_args():
         "--model_path",
         type=str,
         default="outputs/models/best_model.pt",
-        help="Path to trained model checkpoint"
+        help="Path to trained model checkpoint",
     )
     parser.add_argument(
-        "--config",
-        type=str,
-        default="configs/config.yaml",
-        help="Path to config file"
+        "--config", type=str, default="configs/config.yaml", help="Path to config file"
     )
     parser.add_argument(
         "--output_dir",
         type=str,
         default="outputs/figures",
-        help="Directory to save results"
+        help="Directory to save results",
     )
     return parser.parse_args()
 
@@ -52,26 +49,26 @@ def run_inference(model, test_loader, device):
     all_preds = []
     all_labels = []
     all_probs = []
-    
+
     for visual, text, labels in test_loader:
         visual = visual.to(device)
         text = text.to(device)
-        
+
         outputs = model(visual, text)
         probs = torch.softmax(outputs, dim=1)
         preds = outputs.argmax(dim=1)
-        
+
         all_preds.extend(preds.cpu().numpy())
         all_labels.extend(labels.numpy())
         all_probs.extend(probs.cpu().numpy())
-    
+
     return np.array(all_preds), np.array(all_labels), np.array(all_probs)
 
 
 def plot_confusion_matrix(labels, preds, class_names, save_path):
     """Plot and save confusion matrix."""
     cm = confusion_matrix(labels, preds)
-    
+
     plt.figure(figsize=(16, 14))
     sns.heatmap(
         cm,
@@ -92,19 +89,19 @@ def plot_confusion_matrix(labels, preds, class_names, save_path):
 
 def main():
     args = parse_args()
-    
+
     # Setup
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using device: {device}")
-    
+
     # Load config
     config = Config(args.config)
-    
+
     # Load data
     print("Loading test data...")
     _, _, test_loader, class_to_idx = create_dataloaders(config)
     class_names = list(class_to_idx.keys())
-    
+
     # Load model
     print(f"Loading model from: {args.model_path}")
     model = LateFusionMLP(
@@ -114,21 +111,21 @@ def main():
         num_classes=config.model.num_classes,
         dropout=config.model.dropout,
     )
-    
+
     checkpoint = torch.load(args.model_path, map_location=device, weights_only=False)
     model.load_state_dict(checkpoint["model_state_dict"])
     model = model.to(device)
-    
+
     print(f"Loaded model from epoch {checkpoint['epoch']}")
-    
+
     # Run inference
     print("Running inference...")
     preds, labels, probs = run_inference(model, test_loader, device)
-    
+
     # Calculate metrics
     macro_f1 = f1_score(labels, preds, average="macro")
     micro_f1 = f1_score(labels, preds, average="micro")
-    
+
     print("\n" + "=" * 60)
     print("TEST SET RESULTS")
     print("=" * 60)
@@ -138,15 +135,14 @@ def main():
     print("CLASSIFICATION REPORT")
     print("=" * 60)
     print(classification_report(labels, preds, target_names=class_names))
-    
+
     # Save confusion matrix
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     plot_confusion_matrix(
-        labels, preds, class_names,
-        output_dir / "test_confusion_matrix.png"
+        labels, preds, class_names, output_dir / "test_confusion_matrix.png"
     )
-    
+
     return macro_f1, micro_f1
 
 
