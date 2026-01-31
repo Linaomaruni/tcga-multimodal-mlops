@@ -20,7 +20,7 @@ This project classifies **32 cancer types** from The Cancer Genome Atlas (TCGA) 
 | Text Only (Qwen3) | 0.84 | 0.88 | 88% |
 | **Multi-modal (Late Fusion)** | **0.85** | **0.90** | **90%** |
 
-📈 [View all experiments on W&B](https://wandb.ai/linaomar1016-university-of-amsterdam/tcga-multimodal)
+ [View all experiments on W&B](https://wandb.ai/linaomar1016-university-of-amsterdam/tcga-multimodal)
 
 ##  Repository Structure
 ```
@@ -71,7 +71,7 @@ python scripts/train.py --lr 0.0005 --dropout 0.4 --hidden_dim 512
 python scripts/inference.py --model_path outputs/models/best_model.pt
 ```
 
-## 🔬 Methodology
+## Methodology
 
 ### Data Pipeline
 1. **Data Inspection**: 7,544 patients with complete data across 32 cancer types
@@ -100,7 +100,7 @@ Late-fusion MLP combining:
 ### Confusion Matrix
 ![Confusion Matrix](outputs/figures/test_confusion_matrix.png)
 
-## 🖥️ Snellius HPC
+##  Snellius HPC
 
 ### vLLM Text Processing
 ```bash
@@ -114,7 +114,7 @@ sbatch slurm_jobs/tcga_encoder.job  # Generate embeddings
 sbatch slurm_jobs/train.job
 ```
 
-## 👥 Authors
+##  Authors
 
 - Lina Omar 15862984
 - Sarah Schaefers 15519503
