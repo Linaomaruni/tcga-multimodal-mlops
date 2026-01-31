@@ -6,13 +6,13 @@
 
 A reproducible MLOps pipeline for multi-modal cancer classification using TCGA TITAN visual embeddings and clinical text reports processed through vLLM.
 
-## 🎯 Project Overview
+## Project Overview
 
 This project classifies **32 cancer types** from The Cancer Genome Atlas (TCGA) dataset using:
 - **Visual modality**: Pre-extracted TITAN embeddings (768-dim) from Whole Slide Images
 - **Text modality**: Clinical reports cleaned with Qwen3-4B and embedded with Qwen3-Embedding-0.6B (1024-dim)
 
-## 📊 Results
+## Results
 
 | Model | Test Macro-F1 | Test Micro-F1 | Accuracy |
 |-------|---------------|---------------|----------|
@@ -22,7 +22,7 @@ This project classifies **32 cancer types** from The Cancer Genome Atlas (TCGA) 
 
 📈 [View all experiments on W&B](https://wandb.ai/linaomar1016-university-of-amsterdam/tcga-multimodal)
 
-## 📁 Repository Structure
+##  Repository Structure
 ```
 tcga-multimodal-mlops/
 ├── configs/
@@ -48,7 +48,7 @@ tcga-multimodal-mlops/
 └── vllm/                        # vLLM scripts for text processing
 ```
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Installation
 ```bash
@@ -91,7 +91,7 @@ Late-fusion MLP combining:
 - Dropout: [0.3, 0.4]
 - Hidden dimensions: [256, 512]
 
-## 📈 Visualizations
+##  Visualizations
 
 ### Latent Space Analysis
 ![t-SNE](outputs/figures/tsne_embeddings.png)
@@ -122,6 +122,6 @@ sbatch slurm_jobs/train.job
 - Jette Walvis 15834468
 - Carmen van der Lans 15715353
 
-## 📄 License
+##  License
 
 MIT License
