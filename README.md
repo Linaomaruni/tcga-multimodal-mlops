@@ -116,7 +116,11 @@ sbatch slurm_jobs/train.job
 
 ## 👥 Authors
 
-- Lina Omar - University of Amsterdam
+- Lina Omar 15862984
+- Sarah Schaefers 15519503
+- Fien van Engelen  14655179
+- Jette Walvis 15834468
+- Carmen van der Lans 15715353
 
 ## 📄 License
 
