@@ -2,158 +2,122 @@
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![W&B](https://img.shields.io/badge/Weights%20%26%20Biases-Experiments-yellow)](https://wandb.ai/linaomar1016-university-of-amsterdam/tcga-multimodal)
 
-A reproducible MLOps pipeline for multi-modal cancer classification using TCGA TITAN visual embeddings and clinical text reports. This project implements a late-fusion MLP classifier that combines histopathology image features with processed diagnostic text.
+A reproducible MLOps pipeline for multi-modal cancer classification using TCGA TITAN visual embeddings and clinical text reports processed through vLLM.
 
-##  Project Overview
+## 🎯 Project Overview
 
 This project classifies **32 cancer types** from The Cancer Genome Atlas (TCGA) dataset using:
 - **Visual modality**: Pre-extracted TITAN embeddings (768-dim) from Whole Slide Images
-- **Text modality**: Clinical reports processed through vLLM (Qwen3) for cleaning and embedding extraction (896-dim)
+- **Text modality**: Clinical reports cleaned with Qwen3-4B and embedded with Qwen3-Embedding-0.6B (1024-dim)
 
-## Repository Structure
+## 📊 Results
+
+| Model | Test Macro-F1 | Test Micro-F1 | Accuracy |
+|-------|---------------|---------------|----------|
+| Visual Only (TITAN) | 0.57 | 0.69 | 69% |
+| Text Only (Qwen3) | 0.84 | 0.88 | 88% |
+| **Multi-modal (Late Fusion)** | **0.85** | **0.90** | **90%** |
+
+📈 [View all experiments on W&B](https://wandb.ai/linaomar1016-university-of-amsterdam/tcga-multimodal)
+
+## 📁 Repository Structure
 ```
 tcga-multimodal-mlops/
 ├── configs/
-│   └── config.yaml          # Centralized configuration (no magic numbers!)
+│   └── config.yaml              # Centralized configuration
 ├── data/
-│   ├── processed/           # Processed text embeddings
-│   └── splits/              # Patient-aware train/val/test splits
+│   ├── processed/               # Text embeddings
+│   └── splits/                  # Patient-aware splits
 ├── outputs/
-│   ├── models/              # Trained models (best_model.pt)
-│   ├── logs/                # Training logs
-│   └── figures/             # Visualizations
+│   ├── models/                  # Trained models (best_model.pt)
+│   ├── logs/                    # Training logs
+│   └── figures/                 # Visualizations
 ├── scripts/
-│   ├── train.py             # Main training script
-│   └── inference.py         # Inference script for evaluation
+│   ├── train.py                 # Training script
+│   ├── inference.py             # Inference script
+│   └── visualize_embeddings.py  # UMAP/t-SNE visualization
 ├── src/
-│   ├── data/                # Data loading and preprocessing
-│   ├── models/              # Model architectures
-│   ├── training/            # Training pipeline
-│   └── utils/               # Config, visualization utilities
-├── tcga_data/               # Raw TCGA data
-├── vllm/                    # vLLM scripts for text processing
-├── pyproject.toml           # Project dependencies
-└── requirements.txt         # Python requirements
+│   ├── data/                    # Data loading and preprocessing
+│   ├── models/                  # Model architectures
+│   ├── training/                # Training pipeline
+│   └── utils/                   # Config, visualization utilities
+├── slurm_jobs/                  # SLURM job scripts for Snellius
+├── tcga_data/                   # Raw TCGA data
+└── vllm/                        # vLLM scripts for text processing
 ```
 
-##  Installation
+## 🚀 Quick Start
+
+### Installation
 ```bash
-# Clone the repository
 git clone https://github.com/Linaomaruni/tcga-multimodal-mlops.git
 cd tcga-multimodal-mlops
-
-# Create virtual environment (recommended)
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
 pip install -r requirements.txt
-pip install -e .
 ```
 
-## Data Preparation
-
-### 1. Inspect the data
+### Training
 ```bash
-python src/data/data_inspection.py
-```
-
-### 2. Create patient-aware splits
-```bash
-python src/data/splits.py
-```
-
-### 3. Process text with vLLM (on Snellius)
-```bash
-# Prepare prompts
-python src/data/prepare_prompts.py
-
-# Run decoder (text cleaning)
-cd vllm/src
-sbatch slurm_jobs/tcga_decoder.job
-
-# Run encoder (text embeddings)
-sbatch slurm_jobs/tcga_encoder.job
-```
-
-##  Training
-
-### Train the multi-modal model
-```bash
+# Train multimodal model with W&B logging
 python scripts/train.py --model_type multimodal --wandb_project tcga-multimodal
+
+# Train with custom hyperparameters
+python scripts/train.py --lr 0.0005 --dropout 0.4 --hidden_dim 512
 ```
 
-### Train with custom hyperparameters
-```bash
-python scripts/train.py \
-    --model_type multimodal \
-    --lr 0.0005 \
-    --dropout 0.4 \
-    --hidden_dim 512 \
-    --batch_size 32
-```
-
-### Train unimodal baselines
-```bash
-# Visual only
-python scripts/train.py --model_type visual_only
-
-# Text only
-python scripts/train.py --model_type text_only
-```
-
-##  Inference
-
-Run inference on test set using the best model:
+### Inference
 ```bash
 python scripts/inference.py --model_path outputs/models/best_model.pt
 ```
 
-This outputs:
-- Macro-F1 and Micro-F1 scores
-- Full classification report
-- Confusion matrix visualization
+## 🔬 Methodology
 
-##  Configuration
+### Data Pipeline
+1. **Data Inspection**: 7,544 patients with complete data across 32 cancer types
+2. **Patient-Aware Splitting**: 70/15/15 train/val/test split with no patient overlap
+3. **Text Cleaning**: vLLM decoder (Qwen3-4B-AWQ) cleans raw pathology reports
+4. **Text Embedding**: vLLM encoder (Qwen3-Embedding-0.6B) generates 1024-dim embeddings
 
-All hyperparameters are centralized in `configs/config.yaml`:
-```yaml
-model:
-  visual_dim: 768
-  text_dim: 896
-  hidden_dim: 256
-  num_classes: 32
-  dropout: 0.3
+### Model Architecture
+Late-fusion MLP combining:
+- Visual branch: 768 → 512 (TITAN embeddings)
+- Text branch: 1024 → 512 (Qwen3 embeddings)
+- Fusion: Concatenate → 512 → 256 → 32 classes
 
-training:
-  batch_size: 64
-  learning_rate: 0.001
-  num_epochs: 100
+### Hyperparameter Optimization
+5 configurations tested with W&B tracking:
+- Learning rates: [0.001, 0.0005]
+- Dropout: [0.3, 0.4]
+- Hidden dimensions: [256, 512]
+
+## 📈 Visualizations
+
+### Latent Space Analysis
+![t-SNE](outputs/figures/tsne_embeddings.png)
+![UMAP](outputs/figures/umap_embeddings.png)
+
+### Confusion Matrix
+![Confusion Matrix](outputs/figures/test_confusion_matrix.png)
+
+## 🖥️ Snellius HPC
+
+### vLLM Text Processing
+```bash
+cd vllm/src
+sbatch slurm_jobs/tcga_decoder.job  # Clean reports 
+sbatch slurm_jobs/tcga_encoder.job  # Generate embeddings 
 ```
 
-##  Results
+### Training
+```bash
+sbatch slurm_jobs/train.job
+```
 
-| Model | Macro-F1 | Micro-F1 |
-|-------|----------|----------|
-| Visual Only | TBD | TBD |
-| Text Only | TBD | TBD |
-| **Multi-modal (Ours)** | **TBD** | **TBD** |
+## 👥 Authors
 
-##  Links
+- Lina Omar - University of Amsterdam
 
-- [W&B Dashboard](https://wandb.ai/) - Experiment tracking
-- [TCGA Dataset](https://www.cancer.gov/tcga) - Original data source
-- [TITAN Model](https://github.com/mahmoodlab/TITAN) - Visual embedding extractor
+## 📄 License
 
-##  Authors
-
-- Lina Omar
-- Jette Walvis
-- Sarah Schaefers
-- Carmen van der Lans
-- Fien van Engelen
-
-##  License
-
-This project is licensed under the MIT License.
+MIT License
