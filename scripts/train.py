@@ -3,20 +3,19 @@ Main training script for TCGA Multi-modal Classification.
 Usage: python scripts/train.py
 """
 
-import sys
 import argparse
+import sys
 from pathlib import Path
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-import torch
 import wandb
 
-from src.utils.config import Config
-from src.models.fusion_mlp import LateFusionMLP, UnimodalMLP
 from src.data.dataloader import create_dataloaders
+from src.models.fusion_mlp import LateFusionMLP, UnimodalMLP
 from src.training.trainer import Trainer
+from src.utils.config import Config
 
 
 def parse_args():

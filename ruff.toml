@@ -1,0 +1,6 @@
+[lint]
+ignore = ["E402"]
+
+[lint.per-file-ignores]
+"scripts/*" = ["E402"]
+"src/*" = ["B007", "F841"]

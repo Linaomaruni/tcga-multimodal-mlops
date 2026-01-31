@@ -3,9 +3,10 @@ Configuration loader for TCGA Multi-modal Classification.
 Centralizes all hyperparameters - NO MAGIC NUMBERS in code!
 """
 
-import yaml
 from pathlib import Path
 from typing import Any
+
+import yaml
 
 
 def load_config(config_path: str = "configs/config.yaml") -> dict[str, Any]:

@@ -6,7 +6,6 @@ This script prepends a cleaning prompt to each report in tcga_reports.jsonl.
 import json
 from pathlib import Path
 
-
 # Clinical text cleaning prompt instructs the LLM to clean messy reports
 CLEANING_PROMPT = """You are an expert pathologist assistant. Clean and standardize the following clinical pathology report.
 

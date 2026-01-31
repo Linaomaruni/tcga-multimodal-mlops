@@ -5,21 +5,21 @@ Loads best_model.pt and evaluates on test data.
 Usage: python scripts/inference.py --model_path outputs/models/best_model.pt
 """
 
-import sys
 import argparse
+import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-import torch
-import numpy as np
-from sklearn.metrics import classification_report, confusion_matrix, f1_score
 import matplotlib.pyplot as plt
+import numpy as np
 import seaborn as sns
+import torch
+from sklearn.metrics import classification_report, confusion_matrix, f1_score
 
-from src.utils.config import Config
-from src.models.fusion_mlp import LateFusionMLP
 from src.data.dataloader import create_dataloaders
+from src.models.fusion_mlp import LateFusionMLP
+from src.utils.config import Config
 
 
 def parse_args():

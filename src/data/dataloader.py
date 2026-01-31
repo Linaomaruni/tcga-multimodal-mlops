@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pandas as pd
 import torch
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import DataLoader, Dataset
 
 
 class TCGAMultimodalDataset(Dataset):
@@ -180,7 +180,7 @@ if __name__ == "__main__":
     
     # Test one batch
     visual, text, labels = next(iter(train_loader))
-    print(f"\nBatch shapes:")
+    print("\nBatch shapes:")
     print(f"  Visual: {visual.shape}")
     print(f"  Text: {text.shape}")
     print(f"  Labels: {labels.shape}")

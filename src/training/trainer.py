@@ -3,17 +3,17 @@ Training pipeline for TCGA Multi-modal Classification.
 Includes W&B logging for experiment tracking.
 """
 
-import torch
-import torch.nn as nn
-from torch.optim import Adam
-from torch.optim.lr_scheduler import CosineAnnealingLR
 from pathlib import Path
-from tqdm import tqdm
-import wandb
-from sklearn.metrics import f1_score, classification_report, confusion_matrix
-import numpy as np
+
 import matplotlib.pyplot as plt
 import seaborn as sns
+import torch
+import torch.nn as nn
+import wandb
+from sklearn.metrics import confusion_matrix, f1_score
+from torch.optim import Adam
+from torch.optim.lr_scheduler import CosineAnnealingLR
+from tqdm import tqdm
 
 
 class Trainer:

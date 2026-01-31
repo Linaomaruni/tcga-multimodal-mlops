@@ -1,0 +1,26 @@
+#!/bin/bash
+#SBATCH --job-name=test_decoder
+#SBATCH --partition=gpu_course
+#SBATCH --gpus-per-node=1
+#SBATCH --ntasks=1
+#SBATCH --mem=16G
+#SBATCH --cpus-per-task=4
+#SBATCH --time=02:00:00
+#SBATCH --output=outputs/logs/test_decoder_%j.log
+
+INPUT_FILE=$1
+OUTPUT_FILE=$2
+
+cd ~/tcga-multimodal-mlops/vllm/src
+export PORT=$(shuf -i 10000-60000 -n 1)
+export CONTAINER_PATH="/projects/2/managed_datasets/containers/vllm/cuda-13.0-vllm.sif"
+
+apptainer exec --nv -B "$PWD" "$CONTAINER_PATH" \
+  vllm serve "Qwen/Qwen3-4B-AWQ" --port $PORT --max-num-seqs 8 --max-model-len 4096 --gpu-memory-utilization 0.9 &
+
+while ! curl -s "http://localhost:$PORT/health" > /dev/null; do sleep 2; done
+
+apptainer exec --nv -B "$PWD" "$CONTAINER_PATH" \
+  python3 python_scripts/batch_inference_decoder.py --input "$INPUT_FILE" --output "$OUTPUT_FILE" --port $PORT --concurrency 8
+
+pkill -f "vllm serve"

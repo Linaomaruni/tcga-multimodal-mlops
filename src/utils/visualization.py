@@ -3,10 +3,10 @@ Embedding visualization using UMAP and t-SNE.
 For latent space analysis and error analysis.
 """
 
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 from pathlib import Path
+
+import matplotlib.pyplot as plt
+import numpy as np
 import torch
 from sklearn.manifold import TSNE
 from tqdm import tqdm
@@ -76,8 +76,8 @@ def plot_tsne(
     # Add legend with class names
     unique_labels = np.unique(labels)
     handles = [
-        plt.scatter([], [], c=[plt.cm.tab20(l / len(unique_labels))], label=class_names[l], s=50)
-        for l in unique_labels[:20]  # Limit legend to 20 classes
+        plt.scatter([], [], c=[plt.cm.tab20(label / len(unique_labels))], label=class_names[label], s=50)
+        for label in unique_labels[:20]  # Limit legend to 20 classes
     ]
     plt.legend(
         handles=handles,
@@ -131,8 +131,8 @@ def plot_umap(
     # Add legend
     unique_labels = np.unique(labels)
     handles = [
-        plt.scatter([], [], c=[plt.cm.tab20(l / len(unique_labels))], label=class_names[l], s=50)
-        for l in unique_labels[:20]
+        plt.scatter([], [], c=[plt.cm.tab20(label / len(unique_labels))], label=class_names[label], s=50)
+        for label in unique_labels[:20]
     ]
     plt.legend(
         handles=handles,
